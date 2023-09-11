@@ -1,20 +1,25 @@
 package com.coco.cocochi.Controller;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
+@RequestMapping("/member")
+@Log4j2
+@RequiredArgsConstructor
 public class MemberController {
     @GetMapping("/login")
-    public String login(){
+    public void loginGET(String error, String logout){
+        log.info("login get..............");
+        log.info("logout: " + logout);
 
-        return "";
+        if(logout != null){
+            log.info("user logout.........");  //로그아웃 여부 확인
+        }
     }
 
-    @GetMapping("/join")
-    public String join(){
-
-        return "";
-    }
 }
