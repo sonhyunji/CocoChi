@@ -1,6 +1,7 @@
 package com.coco.cocochi.Config;
 
 import com.coco.cocochi.Security.CustomUserDetailsService;
+import com.coco.cocochi.Security.Handler.Custom403Handler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -36,8 +38,7 @@ public class SpringBootSecurityConfiguration {
 
         log.info("------------------configure------------------");
 
-        //커스텀 로그인 페이지
-        http.formLogin().loginPage("/member/login"); //로그인 화면에서 로그인을 진행함
+        http.formLogin().loginPage("/member/login"); //내가 만든 로그인 화면에서 로그인을 진행함
         http.csrf().disable(); //CSRF 토큰 비활성화
 
         http.rememberMe()
@@ -46,7 +47,14 @@ public class SpringBootSecurityConfiguration {
                 .userDetailsService(userDetailsService)
                 .tokenValiditySeconds(60*60*24*30);
 
+        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler()); //403
+
         return http.build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new Custom403Handler();
     }
 
     @Bean
